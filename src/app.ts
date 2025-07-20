@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
 import * as T from './types';
 import { fsrs, FSRS, Card as FsrsCard, Rating as FsrsRating, State as FsrsState, createEmptyCard } from 'ts-fsrs';
@@ -16,6 +17,7 @@ export const db = drizzle(sql, { schema });
 
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 //
