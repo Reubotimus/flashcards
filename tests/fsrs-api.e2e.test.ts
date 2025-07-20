@@ -6,6 +6,7 @@ import { Rating, State, FsrsSnapshot, ReviewResult } from "../src/contracts"; //
 import app from '../src/app';
 import { db } from '../src/app';
 import { users } from '../src/db/schema';
+import { eq } from "drizzle-orm";
 
 const apiKey = process.env.API_KEY!;
 const request = supertest.agent(app).set("X-API-Key", apiKey);
@@ -17,7 +18,11 @@ describe("FSRS API – happy path", () => {
     let originalSnapshot: FsrsSnapshot;
 
     beforeAll(async () => {
-        await db.insert(users).values({ id: userId, email: 'test@example.com' });
+        await db.insert(users).values({ id: userId, email: `test-${userId}@example.com` });
+    });
+
+    afterAll(async () => {
+        await db.delete(users).where(eq(users.id, userId));
     });
 
     it("creates a deck", async () => {
