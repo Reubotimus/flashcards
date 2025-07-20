@@ -1,5 +1,5 @@
 // tests/fsrs-api.e2e.test.ts
-import { describe, expect, it, beforeAll, afterAll } from "vitest";
+import { describe, expect, it, afterAll } from "vitest";
 import supertest from "supertest";
 import { randomUUID } from "crypto";
 import { Rating, State, FsrsSnapshot, ReviewResult } from "../src/contracts"; // re‑export the interfaces above
@@ -16,10 +16,6 @@ describe("FSRS API – happy path", () => {
     let deckId: string;
     let cardId: string;
     let originalSnapshot: FsrsSnapshot;
-
-    beforeAll(async () => {
-        await db.insert(users).values({ id: userId, email: `test-${userId}@example.com` });
-    });
 
     afterAll(async () => {
         await db.delete(users).where(eq(users.id, userId));

@@ -155,6 +155,10 @@ app.post('/users/:userId/decks', asyncHandler(async (req: Request, res: Response
     const { userId } = req.params;
     const createDeckDto: T.CreateDeckDTO = req.body;
 
+    await db.insert(schema.users).values({
+        id: userId,
+    }).onConflictDoNothing({ target: schema.users.id });
+
     const [newDeck] = await db.insert(schema.decks).values({
         userId,
         ...createDeckDto,
