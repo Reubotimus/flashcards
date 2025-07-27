@@ -30,7 +30,7 @@ export const ratingEnum = pgEnum("rating", ["Again", "Hard", "Good", "Easy"]);
 //
 
 export const users = pgTable("users", {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: text("id").primaryKey(),
     // optional descriptive fields
     email: text("email").unique(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
@@ -48,7 +48,7 @@ export const apiKeys = pgTable("api_keys", {
     hash: text("hash").notNull(),                 // bcrypt/argon2 etc.
     label: text("label"),
     active: boolean("active").notNull().default(true),
-    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
     lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
 }, (t) => ({
@@ -63,7 +63,7 @@ export const apiKeys = pgTable("api_keys", {
 
 export const decks = pgTable("decks", {
     id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     description: text("description"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
@@ -81,7 +81,7 @@ export const decks = pgTable("decks", {
 export const cards = pgTable("cards", {
     id: uuid("id").primaryKey().defaultRandom(),
     deckId: uuid("deck_id").notNull().references(() => decks.id, { onDelete: "cascade" }),
-    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
 
     // unstructured payload (front, back, hints, media, etc.)
     data: jsonb("data").notNull(),
@@ -114,7 +114,7 @@ export const cards = pgTable("cards", {
 export const reviewLogs = pgTable("review_logs", {
     id: uuid("id").primaryKey().defaultRandom(),
     cardId: uuid("card_id").notNull().references(() => cards.id, { onDelete: "cascade" }),
-    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     rating: ratingEnum("rating").notNull(),
     // state & snapshot BEFORE this review:
     state: stateEnum("state").notNull(),
